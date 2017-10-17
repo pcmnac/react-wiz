@@ -49,7 +49,7 @@ class WizardNavigation extends Component {
         return render(
             current == 0, // first
             current == last, // last
-            steps[current].valid, // valid
+            steps[current] && steps[current].valid, // valid
             this.handleStepChange.bind(this, prev, false), // prev
             this.handleStepChange.bind(this, next), // next
             onFinish, // finish
