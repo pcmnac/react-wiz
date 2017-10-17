@@ -1,4 +1,5 @@
 import React from 'react';
+import StepContainer from './StepContainer';
 
 export function wiz(tabs, content, nav) {
     return (
@@ -33,7 +34,8 @@ export function tabsContainer(tabs) {
 export function step(step, index, current, setStepActiveStatus, isStepActive, stateManager) {
     return (
         <div style={{display: index === current ? 'block' : 'none'}}>
-            <step.component key={index} index={index} 
+            <StepContainer Component={step.component} 
+                key={index} index={index} 
                 valid={step.valid}
                 stepState={step.state}
                 isStepActive={isStepActive}
