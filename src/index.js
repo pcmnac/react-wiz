@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import debounce from 'lodash.debounce';
 import Tabs from './WizardTabs';
 import Content from './WizardContent';
 import Nav from './WizardNavigation';
@@ -82,9 +81,9 @@ class Wizard extends Component {
         this.state = initialState;
 
         // bindings
-        this.handleStepStateChange = debounce(this.handleStepStateChange.bind(this), 300, {leading: true});
+        this.handleStepStateChange = _.debounce(this.handleStepStateChange.bind(this), 300, {leading: true});
         // this.handleStepStateChange = this.handleStepStateChange.bind(this);
-        this.handleStepValidationChange = debounce(this.handleStepValidationChange.bind(this), 300, {leading: true});
+        this.handleStepValidationChange = _.debounce(this.handleStepValidationChange.bind(this), 300, {leading: true});
         // this.handleStepValidationChange = this.handleStepValidationChange.bind(this);
     }
 
