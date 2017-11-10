@@ -176,12 +176,14 @@ class Wizard extends Component {
 
         const { current } = this.state;
 
-        let steps = steps2array(this.state);
-        const state = getStepState(steps);
+        let stepsState = steps2array(this.state);
+        const { steps: stepProps } = this.props;
+        const state = getStepState(stepsState);
         let prevActiveStep = { valid: true, navigable: true };
 
-        steps = steps.map( (step, i) => {
-            let { active, title, valid } = step;
+        stepsState = stepsState.map( (step, i) => {
+            let { active, title } = step;
+            let { valid = true } = stepProps;
             
             if (typeof(active) === 'function') {
                 active = active(state) || false;
@@ -213,13 +215,13 @@ class Wizard extends Component {
         let { customNumbers = false, hideNumbers = false } = this.props;
 
         return this.renderer.wiz(
-            <Tabs steps={steps} current={current} 
+            <Tabs steps={stepsState} current={current} 
                 customNumbers={customNumbers}
                 hideNumbers={hideNumbers}
                 renderContainer={this.renderer.tabsContainer}
                 renderTab={this.renderer.tab}
                 onStepChange={this.handleStepChange} />,
-            <Content steps={steps} current={current} 
+            <Content steps={stepsState} current={current} 
                 renderContainer={this.renderer.stepsContainer}
                 renderStep={this.renderer.step}
                 setStepActiveStatus={this.setStepActiveStatus}
@@ -227,7 +229,7 @@ class Wizard extends Component {
                 onStepStateChange={this.handleStepStateChange}
                 getStepState={this.getStepState}
                 isStepActive={this.isStepActive} />,
-            <Nav steps={steps} current={current} render={this.renderer.nav}
+            <Nav steps={stepsState} current={current} render={this.renderer.nav}
                 onFinish={this.handleFinish}
                 onStepChange={this.handleStepChange} />
         );
