@@ -183,7 +183,7 @@ class Wizard extends Component {
 
         stepsState = stepsState.map( (step, i) => {
             let { active, title } = step;
-            let { valid = true } = stepProps;
+            let { valid = true } = stepProps[i];
             
             if (typeof(active) === 'function') {
                 active = active(state) || false;
