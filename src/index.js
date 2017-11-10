@@ -45,7 +45,6 @@ class Wizard extends Component {
         let { 
             start = 0, 
             steps = [], 
-            validation = false, 
             renderer = defaultRenderer 
         } = props;
 
@@ -64,14 +63,15 @@ class Wizard extends Component {
             [`step_${idx}`]: {
                 ...step, 
                 active: step.active ? step.active : true,
-                valid: step.validation !== undefined ? !step.validation : !validation,
+                valid: (step.valid !== undefined && step.valid !== null) ? 
+                    (typeof(step.valid === 'function') ? step.valid(state) : step.valid) : true,
                 state: {},
                 touched: idx == start,
             }
         }), {});
 
         //setup navigation
-        stateSteps = this._makeNavigable(stateSteps);
+        // stateSteps = this._makeNavigable(stateSteps);
         
         let initialState = {
             current: parseInt(start),
@@ -96,14 +96,14 @@ class Wizard extends Component {
 
     _makeNavigable(steps) {
 
-        for (let name in steps) {
-            let res = stepKeyPattern.exec(name);
-            if (res) {
-                let i = parseInt(res[2]);
-                let step = steps[name];
-                step.navigable = i == 0 || steps[res[1] + (i - 1)].valid && steps[res[1] + (i - 1)].navigable; 
-            }
-        }
+        // for (let name in steps) {
+        //     let res = stepKeyPattern.exec(name);
+        //     if (res) {
+        //         let i = parseInt(res[2]);
+        //         let step = steps[name];
+        //         step.navigable = i == 0 || steps[res[1] + (i - 1)].valid && steps[res[1] + (i - 1)].navigable; 
+        //     }
+        // }
 
         return steps;
     }
@@ -178,19 +178,36 @@ class Wizard extends Component {
 
         let steps = steps2array(this.state);
         const state = getStepState(steps);
+        let prevActiveStep = { valid: true, navigable: true };
+
         steps = steps.map( (step, i) => {
-            let { active, title } = step;
+            let { active, title, valid } = step;
+            
             if (typeof(active) === 'function') {
                 active = active(state) || false;
             }
             if (typeof(title) === 'function') {
-                title = title(state) || false;
+                title = title(state);
             }
-            return {
+            if (typeof(valid) === 'function') {
+                valid = valid(state) || false;
+            }
+
+            const navigable = prevActiveStep.valid && prevActiveStep.navigable;
+
+            const result = {
                 ...step,
                 active,
                 title,
+                valid,
+                navigable,
+            };
+
+            if (active) {
+                prevActiveStep = result;
             }
+
+            return result;
         });
 
         let { customNumbers = false, hideNumbers = false } = this.props;
