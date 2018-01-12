@@ -27,7 +27,6 @@ class WizardContent extends Component {
                 setStepActiveStatus,
                 isStepActive,
                 getStepState,
-                errors,
             )
         }));
     }

@@ -30,7 +30,7 @@ export function tabsContainer(tabs) {
     return <div>{tabs}</div>;
 }
 
-export function step(step, index, current, setStepActiveStatus, isStepActive, getStepState, errors) {
+export function step(step, index, current, setStepActiveStatus, isStepActive, getStepState) {
     return (
         <div style={{display: index === current ? 'block' : 'none'}}>
             <step.component
@@ -40,7 +40,7 @@ export function step(step, index, current, setStepActiveStatus, isStepActive, ge
                 isStepActive={isStepActive}
                 setStepActiveStatus={setStepActiveStatus}
                 getStepState={getStepState}
-                errors={errors} />
+                errors={step.errors} />
         </div>
     );
 }
