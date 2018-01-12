@@ -37,6 +37,24 @@ function exportState(state) {
     return getStepState(steps2array(state));
 }
 
+function getValidationState(valid) {
+    if (typeof(valid) === 'function') {
+        valid = valid();
+    }
+
+    return valid;
+}
+
+function withoutValidationErrors(valid) {
+    if (typeof(valid) === 'object') {
+        // expected to be a object like { "fieldA": { type: 'ERROR', message: 'required' } }
+        valid = _.map(valid, () => 1).length === 0;
+    }
+
+    return valid;
+}
+
+
 class Wizard extends Component {
 
     constructor(props) {
@@ -58,33 +76,24 @@ class Wizard extends Component {
             };
         }, {});
 
-        let stateSteps = steps.reduce((state, step, idx) => ({
-            ...state,
-            [`step_${idx}`]: {
-                ...step, 
-                active: step.active ? step.active : true,
-                valid: (step.valid !== undefined && step.valid !== null) ? 
-                    (typeof(step.valid === 'function') ? step.valid(state) : step.valid) : true,
-                state: {},
-                touched: idx == start,
+        let stateSteps = steps.reduce((state, step, idx) => {
+            return {
+                ...state,
+                [`step_${idx}`]: {
+                    ...step, 
+                    active: step.active ? step.active : true,
+                    valid: step.valid,
+                    touched: idx === start,
+                }
             }
-        }), {});
+        }, {});
 
-        //setup navigation
-        // stateSteps = this._makeNavigable(stateSteps);
-        
         let initialState = {
             current: parseInt(start),
             ...stateSteps,
         };
 
         this.state = initialState;
-
-        // bindings
-        this.handleStepStateChange = _.debounce(this.handleStepStateChange.bind(this), 300, {leading: true});
-        // this.handleStepStateChange = this.handleStepStateChange.bind(this);
-        this.handleStepValidationChange = _.debounce(this.handleStepValidationChange.bind(this), 300, {leading: true});
-        // this.handleStepValidationChange = this.handleStepValidationChange.bind(this);
     }
 
     getStepIndex = label => {
@@ -92,20 +101,6 @@ class Wizard extends Component {
             return this.labelsMap[label];
 
         return label;
-    }
-
-    _makeNavigable(steps) {
-
-        // for (let name in steps) {
-        //     let res = stepKeyPattern.exec(name);
-        //     if (res) {
-        //         let i = parseInt(res[2]);
-        //         let step = steps[name];
-        //         step.navigable = i == 0 || steps[res[1] + (i - 1)].valid && steps[res[1] + (i - 1)].navigable; 
-        //     }
-        // }
-
-        return steps;
     }
 
     handleStepChange = stepIndex => {
@@ -116,46 +111,7 @@ class Wizard extends Component {
         }));
     }
 
-    handleStepStateChange(stepIndex, state, validator) {
-
-        this.setState( prevState => {
-            
-            let stepKey = `step_${stepIndex}`;
-            let step = prevState[stepKey];
-            let valid = step.valid;
-
-            let newState = {
-                ...step.state, 
-                ...state, 
-            };
-
-            if (validator) {
-                valid = validator(newState);
-            }
-
-            return {
-                [stepKey]: {...step, state: newState, valid},
-            };
-
-        });
-
-    }
-
-    getStepState = step => this.state[`step_${this.getStepIndex(step)}`].state;
-
     isStepActive = step => this.state[`step_${this.getStepIndex(step)}`].active;
-
-    handleStepValidationChange = (stepIndex, valid) => {
-        this.setState( prevState => {
-
-            let stepKey = `step_${stepIndex}`;
-            let step = prevState[stepKey];
-
-            return { 
-                [stepKey]: {...step, valid},
-            }
-        });
-    }
 
     setStepActiveStatus = (stepId, active) => {
         this.setState( prevState => {
@@ -191,18 +147,29 @@ class Wizard extends Component {
             if (typeof(title) === 'function') {
                 title = title(state);
             }
-            if (typeof(valid) === 'function') {
-                valid = valid(state) || false;
-            }
 
+            let errors = {};
+            let stepValid = true;
+
+            if (valid !== undefined && valid !== null) {
+                const validationStatus = getValidationState(valid);
+                if (typeof(validationStatus) === 'object') {
+                    errors = validationStatus;
+                    stepValid = withoutValidationErrors(errors);
+                } else {
+                    stepValid = validationStatus;
+                }
+            }
+            
             const navigable = prevActiveStep.valid && prevActiveStep.navigable;
 
             const result = {
                 ...step,
                 active,
                 title,
-                valid,
+                valid: stepValid,
                 navigable,
+                errors,
             };
 
             if (active) {
@@ -225,8 +192,6 @@ class Wizard extends Component {
                 renderContainer={this.renderer.stepsContainer}
                 renderStep={this.renderer.step}
                 setStepActiveStatus={this.setStepActiveStatus}
-                onValidateStep={this.handleStepValidationChange}
-                onStepStateChange={this.handleStepStateChange}
                 getStepState={this.getStepState}
                 isStepActive={this.isStepActive} />,
             <Nav steps={stepsState} current={current} render={this.renderer.nav}
@@ -238,5 +203,3 @@ class Wizard extends Component {
 }
 
 export default Wizard;
-
-export { default as StepContainer } from './StepContainer';
