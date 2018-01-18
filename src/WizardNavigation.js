@@ -21,7 +21,7 @@ class WizardNavigation extends Component {
         }
     }
 
-    handleFinish() {
+    handleFinish = () => {
         const { 
             current,
             steps,
@@ -64,7 +64,7 @@ class WizardNavigation extends Component {
             current == last, // last
             steps[current] && steps[current].valid, // valid
             this.handleStepChange.bind(this, prev, false), // prev
-            this.handleStepChange.bind(this, next), // next
+            this.handleStepChange.bind(this, next, true), // next
             this.handleFinish, // finish
         ); 
     }
