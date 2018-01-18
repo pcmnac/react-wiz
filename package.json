@@ -3,7 +3,7 @@
   "description": "Style-free react wizard component",
   "author": "Paulo Coutinho",
   "user": "pcmnac",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "start": "catalog start docs",
     "test": "jest",
