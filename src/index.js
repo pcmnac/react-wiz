@@ -60,7 +60,7 @@ class Wizard extends Component {
     constructor(props) {
         super(props);
 
-        let { 
+        const { 
             start = 0, 
             steps = [], 
             renderer = defaultRenderer 
@@ -76,7 +76,7 @@ class Wizard extends Component {
             };
         }, {});
 
-        let stateSteps = steps.reduce((state, step, idx) => {
+        const stateSteps = steps.reduce((state, step, idx) => {
             return {
                 ...state,
                 [`step_${idx}`]: {
@@ -84,11 +84,12 @@ class Wizard extends Component {
                     active: step.active ? step.active : true,
                     valid: step.valid,
                     touched: idx === start,
+                    submitted: false,
                 }
             }
         }, {});
 
-        let initialState = {
+        const initialState = {
             current: parseInt(start),
             ...stateSteps,
         };
@@ -104,10 +105,17 @@ class Wizard extends Component {
     }
 
     handleStepChange = stepIndex => {
-        let stepKey = `step_${stepIndex}`;
-        this.setState( prevState => ({ 
+        const stepKey = `step_${stepIndex}`;
+        this.setState( prevState => ({
             current: stepIndex,
             [stepKey]: { ...prevState[stepKey], touched: true },
+        }));
+    }
+
+    handleSubmitAttempt = stepIndex => {
+        const stepKey = `step_${stepIndex}`;
+        this.setState( prevState => ({ 
+            [stepKey]: { ...prevState[stepKey], submitted: true },
         }));
     }
 
@@ -115,9 +123,8 @@ class Wizard extends Component {
 
     setStepActiveStatus = (stepId, active) => {
         this.setState( prevState => {
-            let stepKey = `step_${this.getStepIndex(stepId)}`;
-            let step = prevState[stepKey];
-
+            const stepKey = `step_${this.getStepIndex(stepId)}`;
+            const step = prevState[stepKey];
             return { 
                 [stepKey]: {...step, active},
             };
@@ -196,6 +203,7 @@ class Wizard extends Component {
                 isStepActive={this.isStepActive} />,
             <Nav steps={stepsState} current={current} render={this.renderer.nav}
                 onFinish={this.handleFinish}
+                onSubmitError={this.handleSubmitAttempt}
                 onStepChange={this.handleStepChange} />
         );
     }

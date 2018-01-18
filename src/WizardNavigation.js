@@ -7,31 +7,44 @@ class WizardNavigation extends Component {
     }
 
     handleStepChange(step, forward = true) {
-
-        let { 
+        const { 
             current,
             steps,
-            onStepChange = (step) => { console.log("step changed: ", step) } 
+            onStepChange,
+            onSubmitError,
         } = this.props;
 
         if (forward && !steps[current].valid) {
-            alert("invalid");
-            return false;
+            onSubmitError(current);
+        } else {
+            onStepChange(step);
         }
+    }
 
-        onStepChange(step);
+    handleFinish() {
+        const { 
+            current,
+            steps,
+            onFinish,
+            onSubmitError,
+        } = this.props;
+
+        if (!steps[current].valid) {
+            onSubmitError(current);
+        } else {
+            onFinish();
+        }
     }
 
     render() {
-
-        let { 
+        const { 
             steps,
             current,
             onFinish,
             render,
         } = this.props;
 
-        let total = steps.length;
+        const total = steps.length;
 
         let prev = 0, next = -1, last = -1;
 
@@ -52,7 +65,7 @@ class WizardNavigation extends Component {
             steps[current] && steps[current].valid, // valid
             this.handleStepChange.bind(this, prev, false), // prev
             this.handleStepChange.bind(this, next), // next
-            onFinish, // finish
+            this.handleFinish, // finish
         ); 
     }
 

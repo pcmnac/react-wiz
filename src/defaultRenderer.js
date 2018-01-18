@@ -36,6 +36,7 @@ export function step(step, index, current, setStepActiveStatus, isStepActive, ge
             <step.component
                 key={index} index={index} 
                 valid={step.valid}
+                submitted={step.submitted}
                 stepState={step.state}
                 isStepActive={isStepActive}
                 setStepActiveStatus={setStepActiveStatus}
