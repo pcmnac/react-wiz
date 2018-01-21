@@ -34,6 +34,7 @@ export function step(step, index, current, setStepActiveStatus, isStepActive, ge
     return (
         <div style={{display: index === current ? 'block' : 'none'}}>
             <step.component
+                {...step.initialProps}
                 key={index} index={index} 
                 valid={step.valid}
                 submitted={step.submitted}

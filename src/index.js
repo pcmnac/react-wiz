@@ -76,7 +76,7 @@ class Wizard extends Component {
             };
         }, {});
 
-        const stateSteps = steps.reduce((state, step, idx) => {
+        const stepsState = steps.reduce((state, step, idx) => {
             return {
                 ...state,
                 [`step_${idx}`]: {
@@ -91,7 +91,7 @@ class Wizard extends Component {
 
         const initialState = {
             current: parseInt(start),
-            ...stateSteps,
+            ...stepsState,
         };
 
         this.state = initialState;
@@ -172,6 +172,7 @@ class Wizard extends Component {
 
             const result = {
                 ...step,
+                initialProps: stepProps[i].props,
                 active,
                 title,
                 valid: stepValid,
