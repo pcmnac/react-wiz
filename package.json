@@ -1,6 +1,6 @@
 {
-  "name": "@pcmnac/react-wizard",
-  "description": "Style-free react wizard component",
+  "name": "react-wizard",
+  "description": "CSS-free react wizard component",
   "author": "Paulo Coutinho",
   "user": "pcmnac",
   "version": "0.3.0",
