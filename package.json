@@ -1,5 +1,5 @@
 {
-  "name": "react-wizard",
+  "name": "react-wiz",
   "description": "CSS-free react wizard component",
   "author": "Paulo Coutinho",
   "user": "pcmnac",
@@ -61,11 +61,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pcmnac/react-wizard.git"
+    "url": "https://github.com/pcmnac/react-wiz.git"
   },
-  "homepage": "https://github.com/pcmnac/react-wizard/wiki",
+  "homepage": "https://github.com/pcmnac/react-wiz/wiki",
   "bugs": {
-    "url": "https://github.com/pcmnac/react-wizard"
+    "url": "https://github.com/pcmnac/react-wiz"
   },
   "jest": {
     "collectCoverage": true,
