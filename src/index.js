@@ -112,11 +112,11 @@ class Wizard extends Component {
                 current: stepIndex,
                 [prevStepKey]: {
                     ...prevState[prevStepKey],
-                    submitted: prevState.submitted || stepIndex > prevState.current
+                    submitted: prevState[prevStepKey].submitted || stepIndex > prevState.current,
                 },
                 [stepKey]: {
                     ...prevState[stepKey],
-                    touched: true
+                    touched: true,
                 },
             };
         });
