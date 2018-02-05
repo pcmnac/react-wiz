@@ -110,7 +110,7 @@ class Wizard extends Component {
             const prevStepKey = `step_${prevState.current}`;
             return {
                 current: stepIndex,
-                [prevStepKey]: { ...prevState[prevStepKey], submitted: true },
+                [prevStepKey]: { ...prevState[prevStepKey], submitted: stepIndex > prevState.current },
                 [stepKey]: { ...prevState[stepKey], touched: true },
             };
         });
