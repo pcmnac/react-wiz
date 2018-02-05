@@ -47,7 +47,6 @@ function getValidationState(valid) {
 
 function withoutValidationErrors(valid) {
     if (typeof(valid) === 'object') {
-        // expected to be a object like { "fieldA": { type: 'ERROR', message: 'required' } }
         valid = _.map(valid, () => 1).length === 0;
     }
 
@@ -106,10 +105,15 @@ class Wizard extends Component {
 
     handleStepChange = stepIndex => {
         const stepKey = `step_${stepIndex}`;
-        this.setState( prevState => ({
-            current: stepIndex,
-            [stepKey]: { ...prevState[stepKey], touched: true },
-        }));
+        
+        this.setState( prevState => {
+            const prevStepKey = `step_${prevState.current}`;
+            return {
+                current: stepIndex,
+                [prevStepKey]: { ...prevState[prevStepKey], submitted: true },
+                [stepKey]: { ...prevState[stepKey], touched: true },
+            };
+        });
     }
 
     handleSubmitAttempt = stepIndex => {
